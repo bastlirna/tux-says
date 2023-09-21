@@ -1,4 +1,4 @@
-# Tux Says
+# 🐧 Tux Says
 
 Project of development board in form of badge for LinuxDays conference. 
 It is based on CH32V003 MCU and implements simple game called **Tux Says** inspirated by elecronic game [Simon](https://en.wikipedia.org/wiki/Simon_(game)).
