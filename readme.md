@@ -7,3 +7,6 @@ It is based on CH32V003 MCU and implements simple game called **Tux Says** inspi
 
 <img src="doc/images/3d-top.png" height="300px">
 
+## HW
+
+- [Schematics](hw/tux_schematics.png)
