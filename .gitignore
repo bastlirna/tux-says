@@ -1,0 +1,5 @@
+src/*/*.elf
+src/*/*.bin
+src/*/*.hex
+src/*/*.map
+src/*/*.lst
