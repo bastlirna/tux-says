@@ -7,13 +7,56 @@
 #define LED_3 4
 #define LED_4 3
 
+#define SYSTICK_SR_CNTIF (1 << 0)
+#define SYSTICK_CTLR_STE (1 << 0)
+#define SYSTICK_CTLR_STIE (1 << 1)
+#define SYSTICK_CTLR_STCLK (1 << 2)
+#define SYSTICK_CTLR_STRE (1 << 3)
+#define SYSTICK_CTLR_SWIE (1 << 31)
+
+volatile uint32_t millis;
+
+/*
+ * Start up the SysTick IRQ
+ */
+void SysTickInit()
+{
+    /* disable default SysTick behavior */
+    SysTick->CTLR = 0;
+
+    /* enable the SysTick IRQ */
+    NVIC_EnableIRQ(SysTicK_IRQn);
+
+    /* Set the tick interval to 1ms for normal op */
+    SysTick->CMP = (FUNCONF_SYSTEM_CORE_CLOCK / (1000)) - 1;
+
+    /* Start at zero */
+    SysTick->CNT = 0;
+    millis = 0;
+
+    /* Enable SysTick counter, IRQ, HCLK/1 */
+    SysTick->CTLR = SYSTICK_CTLR_STE | SYSTICK_CTLR_STIE | SYSTICK_CTLR_STRE | SYSTICK_CTLR_STCLK;
+}
+
+uint8_t x;
+
+/**
+ * SysTick ISR just counts ticks
+ */
+void SysTick_Handler(void) __attribute__((interrupt));
+void SysTick_Handler(void)
+{
+    SysTick->SR = 0; // clear IRQ
+    millis++;
+}
+
 void setLedOutput(uint8_t pin)
 {
     GPIOC->CFGLR &= ~(0xf << (4 * pin));
     GPIOC->CFGLR |= (GPIO_Speed_10MHz | GPIO_CNF_OUT_PP) << (4 * pin);
 }
 
-void setLed(uint8_t pin, uint8_t value)
+void setLedPin(uint8_t pin, uint8_t value)
 {
     if (value)
         GPIOC->BSHR = (1 << pin);
@@ -35,6 +78,25 @@ uint8_t getSwitch(uint8_t pin)
         return (GPIOA->INDR & (1 << 1)) == 0;
     default:
         return 0;
+    }
+}
+
+void setLed(uint8_t led, uint8_t value)
+{
+    switch (led)
+    {
+    case 1:
+        setLedPin(LED_1, value);
+        break;
+    case 2:
+        setLedPin(LED_2, value);
+        break;
+    case 3:
+        setLedPin(LED_3, value);
+        break;
+    case 4:
+        setLedPin(LED_4, value);
+        break;
     }
 }
 
@@ -61,6 +123,10 @@ void GpioInit()
     GPIOC->CFGLR &= ~(0xf << (4 * 3));
     GPIOC->CFGLR |= (GPIO_Speed_10MHz | GPIO_CNF_OUT_PP) << (4 * 3);
 
+    // GPIO D5 (UTX)
+    GPIOD->CFGLR &= ~(0xf << (4 * 5));
+    GPIOD->CFGLR |= (GPIO_Speed_10MHz | GPIO_CNF_OUT_PP) << (4 * 5);
+
     // Switches:
 
     // GPIO PD4 (SW 1)
@@ -84,18 +150,28 @@ void GpioInit()
     GPIOA->BSHR |= 1 << 1;
 }
 
+uint32_t counter;
+
+void delay(uint32_t ms)
+{
+    uint32_t start = millis;
+    while (millis - start < ms)
+        ;
+}
+
 int main()
 {
     SystemInit();
+    SysTickInit();
 
     GpioInit();
 
-    for (size_t i = 0; i < 2; i++)
+    for (size_t i = 0; i < 8; i++)
     {
-        setLed(LED_1, 1);
-        Delay_Ms(200);
-        setLed(LED_1, 0);
-        Delay_Ms(200);
+        setLed(i % 4 + 1, 1);
+        delay(100);
+        setLed(i % 4 + 1, 0);
+        delay(20);
     }
 
     while (1)
@@ -107,30 +183,11 @@ int main()
 
         printf("SW %d %d %d %d \n", sw1, sw2, sw3, sw4);
 
-        setLed(LED_1, sw1);
-        setLed(LED_2, sw2);
-        setLed(LED_3, sw3);
-        setLed(LED_4, sw4);
+        setLed(1, sw1);
+        setLed(2, sw2);
+        setLed(3, sw3);
+        setLed(4, sw4);
 
-        Delay_Ms(250);
+        delay(200);
     }
-
-    /*
-    while(1)
-    {
-        setLed(LED_1, 1);
-        Delay_Ms( 250 );
-        setLed(LED_1, 0);
-        setLed(LED_2, 1);
-        Delay_Ms( 250 );
-        setLed(LED_2, 0);
-        setLed(LED_3, 1);
-        Delay_Ms( 250 );
-        setLed(LED_3, 0);
-        setLed(LED_4, 1);
-        Delay_Ms( 250 );
-        setLed(LED_4, 0);
-        Delay_Ms( 500 );
-    }
-    */
 }
