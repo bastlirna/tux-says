@@ -11,6 +11,7 @@ This demo shows how to use the HW features of the board.
 - [x] Setup GPIO to control LEDs
 - [x] Setup GPIO to read buttons
 - [x] Setup SysTick to count ms
-- [ ] Setup PWM to generate sound
+- [x] Setup PWM to generate sound
+- [ ] Deep speed mode wit wakeup from button
 - [ ] Setup I2C for Shitty Add-On
 - [ ] Implement sw PWM to control LEDs (control GPIO in interrupt from timer) 
