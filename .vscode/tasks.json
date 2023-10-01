@@ -1,0 +1,27 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "shell",
+			"label": "Build",
+			"group": "build",
+			"options": {
+				"cwd": "${workspaceFolder}/source"
+			},
+			"osx": {
+				"command": "make build"
+			}
+		},
+		{
+			"type": "shell",
+			"label": "Build & upload",
+			"group": "build",
+			"options": {
+				"cwd": "${workspaceFolder}/source"
+			},
+			"osx": {
+				"command": "make"
+			}
+		}
+	]
+}
