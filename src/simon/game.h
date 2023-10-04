@@ -18,7 +18,7 @@ TuxSays_Error TuxSays_Game_Stop();
 
 TuxSays_Error TuxSays_Game_Loop();
 
-#define GameById(_id) (&game_##_id)
+#define GameById(_code) (&game_##_code)
 
 #define GAME(_name, _code) extern const TuxSays_Game game_##_code;
 #include "game_list_config.h"

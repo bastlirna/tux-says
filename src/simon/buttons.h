@@ -17,6 +17,8 @@ TuxSays_Error TuxSays_Buttons_Init();
 
 enum lowhigh TuxSays_Buttons_Get(TuxSays_Button button);
 
-void TuxSays_Buttons_Isr(TuxSays_Button button);
+void TuxSays_Buttons_Isr(uint32_t intfr);
 
-TuxSays_Error TuxSays_Buttons_Loop();
+TuxSays_Error TuxSays_Buttons_Read(uint32_t* result, uint32_t timeout);
+
+//TuxSays_Error TuxSays_Buttons_Loop();

@@ -11,6 +11,8 @@
 
 TS_LOG_TAG("LEDS");
 
+static volatile uint32_t current_state = 0;
+
 static void init_gpio() {
 #define GPIO_LED(_name, _pin, _port, _initial_state, _bus)                                    \
     RCC->APB2PCENR |= _bus;                                                                   \
@@ -20,13 +22,19 @@ static void init_gpio() {
 #undef GPIO_LED
 }
 
-static inline void wreg(enum GPIO_port_n port, uint8_t pin, enum lowhigh state) {
-    if(state == low) {
-        pin += 16;
+static TuxSays_Error set_state(uint32_t state) {
+    current_state = state;
+#define GPIO_LED(_name, _pin, _port, _initial_state, _bus) \
+    if(state & (1 << (TuxSays_Led_##_name - 1))) {         \
+        GPIOPortByBase(_port)->BSHR = (1 << (_pin));       \
+    } else {                                               \
+        GPIOPortByBase(_port)->BSHR = (1 << (_pin + 16));  \
     }
-    GPIOPortByBase(port)->BSHR = (1 << (pin));
+#include "leds_config.h"
+#undef GPIO_LED
+    return TuxSays_Ok;
 }
-
+/*
 static TuxSays_Error set_state(TuxSays_Led led, enum lowhigh state) {
     switch(led) {
 #define GPIO_LED(_name, _pin, _port, _initial_state, _bus) \
@@ -40,6 +48,7 @@ static TuxSays_Error set_state(TuxSays_Led led, enum lowhigh state) {
     }
     return TuxSays_Ok;
 }
+*/
 
 TuxSays_Error TuxSays_Leds_Init() {
     init_gpio();
@@ -48,15 +57,39 @@ TuxSays_Error TuxSays_Leds_Init() {
 }
 
 TuxSays_Error TuxSays_Leds_Blink(TuxSays_Led led, uint32_t duration) {
-    set_state(led, high);
-    //Delay_Ms(duration);
+    if(led == TuxSays_Led_None) {
+        return TuxSays_Error_InvalidArgument;
+    }
+
+    current_state |= (1 << (led - 1));
+    set_state(current_state);
+
     TuxSays_SysTick_Delay(duration);
-    set_state(led, low);
+
+    current_state &= ~(1 << (led - 1));
+    set_state(current_state);
+
+    return TuxSays_Ok;
+}
+
+TuxSays_Error TuxSays_Leds_Write(uint32_t state) {
+    set_state(state);
 
     return TuxSays_Ok;
 }
 
 TuxSays_Error TuxSays_Leds_Set(TuxSays_Led led, enum lowhigh state) {
-    set_state(led, state);
+    if(led == TuxSays_Led_None) {
+        set_state(0);
+        return TuxSays_Ok;
+    }
+
+    current_state &= ~(1 << (led - 1));
+    if(state == high) {
+        current_state |= (1 << (led - 1));
+    }
+
+    set_state(current_state);
+
     return TuxSays_Ok;
 }

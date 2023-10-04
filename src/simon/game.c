@@ -19,7 +19,7 @@ TS_LOG_TAG("GM");
 #include "game_list_config.h"
 #undef GAME
 
-static TuxSays_Game* current_game = NULL;
+static volatile TuxSays_Game* current_game = NULL;
 
 static TuxSays_Error stop() {
     if(current_game == NULL) {

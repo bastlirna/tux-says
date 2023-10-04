@@ -37,3 +37,4 @@
 // Beeper
 #define GPIO_BEEPER_PIN 7
 #define GPIO_BEEPER_PORT GPIO_port_C
+#define GPIO_BEEPER_BUS RCC_APB2Periph_GPIOC

@@ -3,10 +3,10 @@
 
 #include "config.h"
 
-//#ifdef TS_LOG_DEFALUT
+#ifdef TS_LOG_DEFALUT
 #define FUNCONF_USE_DEBUGPRINTF 1
 #define FUNCONF_DEBUGPRINTF_TIMEOUT (1 << 31) // Wait for a very very long time.
-//#endif
+#endif
 
 #define FUNCONF_USE_PLL 0
 

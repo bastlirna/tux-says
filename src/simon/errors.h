@@ -5,6 +5,7 @@
 
 typedef enum {
     TuxSays_Ok = 0,
+    TuxSays_Working = 1,
 
     TuxSays_Error_NoAnyGameRunnig = -2000,
 
@@ -12,6 +13,10 @@ typedef enum {
     TuxSays_Error_InvalidArgument = -4001,
     TuxSays_Error_NoFreeMemory = -4002,
     TuxSays_Error_Timeout = -4003,
+    TuxSays_Error_ResourceBusy = -4004,
+
+    TuxSays_Error_NoPendingTask = -5000,
+    TuxSays_Error_NotInTask = -5001,
 } TuxSays_Error;
 
 char* TuxSays_ErrorToString(TuxSays_Error error);

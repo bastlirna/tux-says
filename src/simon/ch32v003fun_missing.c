@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdint.h>
 #include <stdarg.h>
 #include "config.h"
 #include "ch32v003fun_missing.h"
@@ -16,3 +17,26 @@ int missing_vprintf(const char* format, va_list args) {
     return mini_vpprintf(__puts_uart, 0, format, args);
 }
 #endif
+
+uint32_t preudo_rand_r(uint32_t* seed) {
+    uint32_t next = *seed;
+    uint32_t result;
+
+    next *= 1103515245;
+    next += 12345;
+    result = (uint32_t)(next / 65536) % 2048;
+
+    next *= 1103515245;
+    next += 12345;
+    result <<= 10;
+    result ^= (uint32_t)(next / 65536) % 1024;
+
+    next *= 1103515245;
+    next += 12345;
+    result <<= 10;
+    result ^= (uint32_t)(next / 65536) % 1024;
+
+    *seed = next;
+
+    return result;
+}

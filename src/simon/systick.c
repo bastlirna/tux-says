@@ -37,6 +37,16 @@ void TuxSays_SysTick_Init() {
     SysTick->CMP = (FUNCONF_SYSTEM_CORE_CLOCK / systick_prescaler / (1000)) - 1;
 }
 
+uint32_t TuxSays_SysTick_Freze() {
+    SysTick->CTLR &= ~SYSTICK_CTLR_STE;
+    return millis;
+}
+
+void TuxSays_SysTick_Restore(uint32_t elapsed) {
+    millis += elapsed;
+    SysTick->CTLR |= SYSTICK_CTLR_STE;
+}
+
 void TuxSays_SysTick_Delay(uint32_t ms) {
     uint32_t start = millis;
     while(millis - start < ms)

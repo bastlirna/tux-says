@@ -18,3 +18,5 @@ TuxSays_Error TuxSays_Leds_Init();
 TuxSays_Error TuxSays_Leds_Blink(TuxSays_Led led, uint32_t duration);
 
 TuxSays_Error TuxSays_Leds_Set(TuxSays_Led led, enum lowhigh state);
+
+TuxSays_Error TuxSays_Leds_Write(uint32_t state);
