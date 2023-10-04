@@ -9,8 +9,6 @@
 #include "power_management.h"
 #include <stdio.h>
 
-#define VOLUME 5
-
 TS_LOG_TAG("Tone");
 
 static inline void disable();
@@ -75,7 +73,7 @@ TuxSays_Error TuxSays_Tone_Init() {
 
 static inline void enable(uint32_t frequency) {
     // calc prescaller and atrlr
-    uint32_t presc = 16;
+    uint32_t presc = 4;
     uint32_t atrlr = FUNCONF_SYSTEM_CORE_CLOCK / frequency / presc;
 
     while(atrlr > 65000) {
@@ -83,7 +81,7 @@ static inline void enable(uint32_t frequency) {
         atrlr = FUNCONF_SYSTEM_CORE_CLOCK / frequency / presc;
     }
 
-    TIM1->CH2CVR = (atrlr * VOLUME) / 1000;
+    TIM1->CH2CVR = ((atrlr * CONFIG_BEEPER_VOLUME) / CONFIG_BEEPER_VOLUME_BASE) + 1;
     TIM1->PSC = presc;
     TIM1->ATRLR = atrlr;
 
