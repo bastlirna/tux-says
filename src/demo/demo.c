@@ -275,7 +275,7 @@ void Tim1PwmInit()
 	// SMCFGR: default clk input is CK_INT
 	
 	// Prescaler 
-	TIM1->PSC = 960;
+	TIM1->PSC = 60;
 	
 	// Auto Reload - sets period
 	TIM1->ATRLR = 10;
@@ -295,10 +295,18 @@ void Tim1PwmInit()
 	
 	
 	// Enable TIM1 outputs
-	TIM1->BDTR |= TIM_MOE;
+	//TIM1->BDTR |= TIM_MOE;
 	
 	// Enable TIM1
-	TIM1->CTLR1 |= TIM_CEN;
+	//TIM1->CTLR1 |= TIM_CEN;
+}
+
+uint16_t min(uint16_t a, uint16_t b)
+{
+    if (a < b)
+        return a;
+    else
+        return b;
 }
 
 void setPwnFrequency(uint32_t freq)
@@ -315,10 +323,10 @@ void setPwnFrequency(uint32_t freq)
     }
     else
     {
-        uint16_t x = (48000000 / 960) / freq;
+        uint16_t x = (24000000 / 60) / freq;
         //printf("Setting PWM frequency to %ud\n", freq);
         TIM1->ATRLR = x;
-        TIM1->CH2CVR = x/2;
+        TIM1->CH2CVR = (x - 1); //x / 2; //min(x/2, 5);
 
         // Enable TIM1 outputs
 	    TIM1->BDTR |= TIM_MOE;
@@ -333,15 +341,21 @@ void setPwnFrequency(uint32_t freq)
 int main()
 {
     SystemInit();
+
+    //RCC->CFGR0 |=  RCC_HPRE_DIV4;
+
     SysTickInit();
 
     GpioInit();
     Tim1PwmInit();
 
+    //RCC->CFGR0 |= RCC_CFGR0_MCO_SYSCLK;
+
+
     for (size_t i = 0; i < 8; i++)
     {
         setLed(i % 4 + 1, 1);
-        delay(100);
+        delay(10);
         setLed(i % 4 + 1, 0);
         delay(20);
     }
@@ -362,22 +376,22 @@ int main()
 
         if(sw1)
         {
-            setPwnFrequency(NOTE_E3);
+            setPwnFrequency(2700);
         }
         if(sw2)
         {
-            setPwnFrequency(NOTE_CS3);
+            setPwnFrequency(1200);
         }
-        if(sw3)
-        {
-            setPwnFrequency(NOTE_A3);
-        }
-        if(sw4)
-        {
-            setPwnFrequency(NOTE_E2);
-        }
+        // if(sw3)
+        // {
+        //     setPwnFrequency(NOTE_A3);
+        // }
+        // if(sw4)
+        // {
+        //     setPwnFrequency(NOTE_E2);
+        // }
 
-        delay(100);
+        delay(10);
 
         if(!sw1 && !sw2 && !sw3 && !sw4)
               setPwnFrequency(0);
