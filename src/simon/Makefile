@@ -1,5 +1,9 @@
 all : flash
 
+# uncomment if you want to use a different compiler then sugested in ch32v003fun
+# (e.g. https://github.com/xpack-dev-tools/riscv-none-elf-gcc-xpack/releases/tag/v12.2.0-3/)
+# PREFIX?=riscv-none-elf
+
 EXTRA_CFLAGS+=-Werror
 TARGET:=tux_says_main
 ADDITIONAL_C_FILES:= logger.c ch32v003fun_missing.c errors.c tasks.c systick.c \
