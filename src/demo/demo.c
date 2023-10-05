@@ -380,16 +380,16 @@ int main()
         }
         if(sw2)
         {
-            setPwnFrequency(1200);
+            setPwnFrequency(2000);
         }
-        // if(sw3)
-        // {
-        //     setPwnFrequency(NOTE_A3);
-        // }
-        // if(sw4)
-        // {
-        //     setPwnFrequency(NOTE_E2);
-        // }
+        if(sw3)
+        {
+            setPwnFrequency(1800);
+        }
+        if(sw4)
+        {
+            setPwnFrequency(1500);
+        }
 
         delay(10);
 
