@@ -85,7 +85,7 @@ static TuxSays_Error play_memory(TuxSays_Game_Result* result) {
         // Then require the player to repeat the sequence.
         for(uint32_t currentMove = 0; currentMove < game.round; currentMove++) {
             uint32_t choice = 0;
-            TuxSays_Game_wait_for_button(&choice, 3000);
+            TuxSays_Game_wait_for_button(&choice, 6000);
             TS_LOG_I("choice = %lu current = %lu", choice, game.board[currentMove]);
 
             if(choice == 0) {
@@ -110,6 +110,8 @@ TuxSays_Error TuxSays_Game_memory_start() {
 
 TuxSays_Error TuxSays_Game_memory_loop() {
     TuxSays_Game_Result result;
+
+    TuxSays_Task_Delay(500);
 
     // Play memory game and handle result
     CHECK_ERR(play_memory(&result));

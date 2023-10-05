@@ -84,6 +84,7 @@ static inline void enable(uint32_t frequency) {
     TIM1->CH2CVR = ((atrlr * CONFIG_BEEPER_VOLUME) / CONFIG_BEEPER_VOLUME_BASE) + 1;
     TIM1->PSC = presc;
     TIM1->ATRLR = atrlr;
+    TIM1->CNT = 0;
 
     // Enable TIM1 outputs
     TIM1->BDTR |= TIM_MOE;

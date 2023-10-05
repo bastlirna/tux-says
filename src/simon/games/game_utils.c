@@ -49,7 +49,6 @@ TuxSays_Error TuxSays_Game_wait_for_button(uint32_t* result, uint32_t timeout) {
         do {
             // wait for button release
             TuxSays_Buttons_Read(&active_buttons, TS_TASK_NO_BLOCKING);
-            TuxSays_Task_Delay(10);
         } while(active_buttons != 0);
     }
 
@@ -111,7 +110,7 @@ static const uint8_t lose_sequence[] = {
 TuxSays_Error TuxSays_Game_play_loser() {
     for(uint32_t i = 0; i < sizeof(lose_sequence); i++) {
         CHECK_ERR(TuxSays_Leds_Write(lose_sequence[i]));
-        CHECK_ERR(TuxSays_Tone(333, 255));
+        CHECK_ERR(TuxSays_Tone(1500, 255));
     }
     return TuxSays_Ok;
 }
