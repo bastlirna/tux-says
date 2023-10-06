@@ -29,6 +29,51 @@ TuxSays_Error TuxSays_Game_attract_start() {
     return TuxSays_Ok;
 }
 
+static TuxSays_Error sound_disable() {
+    CHECK_ERR(TuxSays_Tone(2217, 200));
+    CHECK_ERR(TuxSays_Task_Delay(100));
+    CHECK_ERR(TuxSays_Tone(1750, 200));
+    CHECK_ERR(TuxSays_Tone_SetSilentMode(1));
+
+    return TuxSays_Ok;
+}
+
+static TuxSays_Error sound_enable() {
+    CHECK_ERR(TuxSays_Tone_SetSilentMode(0));
+    CHECK_ERR(TuxSays_Tone(1750, 200));
+    CHECK_ERR(TuxSays_Task_Delay(100));
+    CHECK_ERR(TuxSays_Tone(2217, 200));
+
+    return TuxSays_Ok;
+}
+
+static uint32_t sound_on_off() {
+    uint32_t tm = TuxSays_SysTick_Milis();
+    uint32_t active_buttons;
+
+    do {
+        // wait for button release
+        TuxSays_Buttons_Read(&active_buttons, TS_TASK_NO_BLOCKING);
+        TuxSays_Leds_Write(active_buttons);
+        TuxSays_Task_Delay(10);
+
+        if((TuxSays_SysTick_Milis() - tm) > 3000) {
+            // toggle sound
+
+            if(active_buttons == CHOICE_GREEN) {
+                sound_disable();
+            } else if(active_buttons == CHOICE_RED) {
+                sound_enable();
+            }
+
+            return 1;
+        }
+
+    } while(active_buttons != 0);
+
+    return 0;
+}
+
 TuxSays_Error TuxSays_Game_attract_loop() {
     game.seed &= TuxSays_SysTick_Milis();
 
@@ -42,7 +87,7 @@ TuxSays_Error TuxSays_Game_attract_loop() {
 
         uint32_t result;
         TuxSays_Buttons_Read(&result, 100);
-        if(result != CHOICE_NONE) {
+        if(result != CHOICE_NONE && !sound_on_off()) {
             TS_LOG_D("start test (button = %08X)", result);
             TuxSays_Game_Start(&game_memory);
             return TuxSays_Ok;

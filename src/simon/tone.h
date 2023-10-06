@@ -9,4 +9,6 @@ TuxSays_Error TuxSays_Tone_Init();
 
 TuxSays_Error TuxSays_Tone(uint32_t frequency, uint32_t duration);
 
+TuxSays_Error TuxSays_Tone_SetSilentMode(uint32_t state);
+
 TuxSays_Error TuxSays_Tone_Gen(TuxSays_Tone_Generator generator, void* ctx);

@@ -26,6 +26,10 @@ static struct {
         volatile TuxSays_Task_Handle* waiting_task;
         volatile uint32_t next_freq;
     } generator;
+    volatile enum {
+        SilentMode_Off = 0,
+        SilentMode_On,
+    } silent_mode;
 } tone;
 
 TuxSays_Error TuxSays_Tone_Init() {
@@ -61,6 +65,7 @@ TuxSays_Error TuxSays_Tone_Init() {
     TIM1->CH2CVR = 100;
 
     tone.state = Tone_Off;
+    tone.silent_mode = SilentMode_Off;
 
     // Enable TIM1 outputs
     //TIM1->BDTR |= TIM_MOE;
@@ -86,8 +91,10 @@ static inline void enable(uint32_t frequency) {
     TIM1->ATRLR = atrlr;
     TIM1->CNT = 0;
 
-    // Enable TIM1 outputs
-    TIM1->BDTR |= TIM_MOE;
+    if(tone.silent_mode == SilentMode_Off) {
+        // Enable TIM1 outputs
+        TIM1->BDTR |= TIM_MOE;
+    }
 
     // Enable TIM1
     TIM1->CTLR1 |= TIM_CEN;
@@ -177,5 +184,10 @@ TuxSays_Error TuxSays_Tone(uint32_t frequency, uint32_t duration) {
 
     disable();
 
+    return TuxSays_Ok;
+}
+
+TuxSays_Error TuxSays_Tone_SetSilentMode(uint32_t state) {
+    tone.silent_mode = state;
     return TuxSays_Ok;
 }
