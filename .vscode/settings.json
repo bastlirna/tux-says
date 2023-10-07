@@ -1,0 +1,29 @@
+{
+    "C_Cpp.default.cStandard": "gnu17",
+    "C_Cpp.default.cppStandard": "c++17",
+    "workbench.tree.indent": 12,
+    "editor.formatOnSave": true,
+    "files.associations": {
+        "leds_config.h": "c",
+        "pin_mapping_config.h": "c",
+        "ch32v003_gpio_branchless.h": "c",
+        "stdio.h": "c",
+        "buttons_config.h": "c",
+        "systick.h": "c",
+        "locale": "c",
+        "leds.h": "c",
+        "button_to_led_config.h": "c",
+        "game_list_config.h": "c",
+        "battle_game.h": "c",
+        "led_color_config.h": "c",
+        "utils.h": "c",
+        "config.h": "c",
+        "ch32v003fun_missing.h": "c",
+        "logger.h": "c"
+    },
+    "clangd.arguments": [
+        // We might be able to tighten this a bit more to only include the correct toolchain.
+        "--query-driver=**",
+        "--compile-commands-dir=${workspaceFolder}/build/latest"
+    ]
+}
